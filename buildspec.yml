@@ -1,33 +1,27 @@
 version: 0.2
 
-env:
-  variables:
-    REPOSITORY_URI: 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraform-aws
-  # IMAGE_TAG will be defined dynamically in pre_build
-
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - echo Setting IMAGE_TAG from commit SHA...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 498484133733.dkr.ecr.ap-south-1.amazonaws.com
+      - REPOSITORY_URI=498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraform-aws
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "IMAGE_TAG=$IMAGE_TAG" >> build.env
+      - echo Repository URI: $REPOSITORY_URI
+      - echo Image Tag: $IMAGE_TAG
 
   build:
     commands:
-      - echo Loading IMAGE_TAG from env...
-      - source build.env
       - echo Building Docker image...
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
       - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
 
   post_build:
     commands:
-      - source build.env
-      - echo Pushing image to ECR...
+      - echo Pushing image to Amazon ECR...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
 
 artifacts:
   files: '**/*'
+
