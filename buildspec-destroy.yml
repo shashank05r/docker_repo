@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo Image tag is $IMAGE_TAG
+
+  build:
+    commands:
+      - echo Skipping Docker build during destroy...
+
+  post_build:
+    commands:
+      - echo Installing Terraform...
+      - curl -LO https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+      - unzip terraform_1.6.6_linux_amd64.zip
+      - mv terraform /usr/local/bin/
+      - terraform version
+      - echo Destroying infrastructure using Terraform...
+      - terraform init
+      - terraform destroy -auto-approve
+
+artifacts:
+  files:
+    - '**/*'
