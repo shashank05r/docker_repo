@@ -23,5 +23,5 @@ phases:
       - docker push $REPOSITORY_URI:latest
 
 artifacts:
-  files: '**/*'
-
+  files:
+    - '**/*'
