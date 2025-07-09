@@ -19,21 +19,14 @@ phases:
       - echo Pushing Docker image...
       - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG
       - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
-
       - echo Installing Terraform...
       - curl -LO https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
       - unzip terraform_1.6.6_linux_amd64.zip
       - mv terraform /usr/local/bin/
       - terraform version
-
-      - echo Initializing Terraform...
+      - echo Deploying infrastructure using Terraform...
       - terraform init
-
-      - echo Applying Terraform infrastructure...
       - terraform apply -auto-approve
-
-       - echo Destroying Terraform infrastructure...
-       - terraform destroy -auto-approve
 
 artifacts:
   files:
