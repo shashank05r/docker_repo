@@ -19,12 +19,9 @@ phases:
       - echo Pushing Docker image...
       - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG
       - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
-
-  post_build:
-  commands:
-    - echo Deploying infrastructure using Terraform...
-    - terraform init
-    - terraform apply -auto-approve
+      - echo Deploying infrastructure using Terraform...
+      - terraform init
+      - terraform apply -auto-approve
 
 artifacts:
   files:
