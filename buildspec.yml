@@ -1,12 +1,16 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_REGION: "ap-south-1"
+    REPOSITORY_URI: "498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws"
+
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 498484133733.dkr.ecr.ap-south-1.amazonaws.com
-      - REPOSITORY_URI=498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraform-aws
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION:-latest} | cut -c 1-7)
       - echo Repository URI: $REPOSITORY_URI
       - echo Image Tag: $IMAGE_TAG
 
