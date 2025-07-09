@@ -1,25 +1,25 @@
 version: 0.2
 
 phases:
-pre_build:
-commands:
-- echo Logging in to Amazon ECR...
-- aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws
-- IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-- echo Image tag is $IMAGE_TAG
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo Image tag is $IMAGE_TAG
 
-build:
-commands:
-- echo Building Docker image...
-- docker build -t 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG .
-- docker tag 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG .
+      - docker tag 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
 
-post_build:
-commands:
-- echo Pushing Docker image...
-- docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG
-- docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
+  post_build:
+    commands:
+      - echo Pushing Docker image...
+      - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:$IMAGE_TAG
+      - docker push 498484133733.dkr.ecr.ap-south-1.amazonaws.com/terraformaws:latest
 
 artifacts:
-files:
-- '**/*'
+  files:
+    - '**/*'
